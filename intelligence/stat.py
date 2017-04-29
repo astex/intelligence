@@ -17,8 +17,8 @@ class NormalDistribution(object):
 
     def __call__(self, x):
         return (
-            1 / np.sqrt(2 * np.pi * self.variance) *
-            np.exp(- (x - self.mean) ** 2 / 2 * self.variance))
+            1. / np.sqrt(2. * np.pi * self.variance) *
+            np.exp(- (x - self.mean) ** 2 / (2. * self.variance)))
 
 
 GaussianDistribution = NormalDistribution
