@@ -20,13 +20,41 @@ class Viterbi(object):
         """
         self.n_states = np.shape(states)[0] # K
 
-        assert np.shape(priors) == (self.n_states,)
-        assert np.shape(transitions) == (self.n_states, self.n_states)
+        if np.shape(priors) != (self.n_states,):
+            raise ValueError("priors must be %s long" % self.n_states)
+        if np.shape(transitions) != (self.n_states, self.n_states):
+            raise ValueError(
+                "transitions must be %s by %s" % (self.n_states, self.n_states))
 
         self.states = states
         self.priors = priors
         self.transitions = transitions
         self.emissions = emissions
+
+    @classmethod
+    def from_discrete_observations(
+            cls, states, priors, transitions, observations, emissions):
+        """Initialize a viterbi wrapper from a discrete set of observations.
+
+        Args:
+            states, priors, transitions: As defined in __init__.
+            observations: The set of possible observations. N,
+            emissions: An array of the probability of observing each state for
+                each possible observation. K,N
+
+        Returns:
+            An initialized Viterbi instance.
+        """
+        observations = list(observations)
+
+        def _get_emission_function(state_emissions):
+            def emission_function(evidence):
+                observation_index = observations.index(evidence)
+                return state_emissions[observation_index]
+            return emission_function
+
+        emission_functions = [_get_emission_function(e) for e in emissions]
+        return cls(states, priors, transitions, emission_functions)
 
     def build_probs(self, evidence):
         """Build viterbi tables from evidence.
