@@ -22,11 +22,11 @@ class ViterbiTest(test_lib.TestCase):
 
     def test_onoff(self):
         """Test with a simple alternating switch."""
-        states = np.array([0, 1])
+        states = np.array([0, 1]) # Off and on.
         priors = np.array([1, 0]) # Starts in the off position.
-        transitions = np.array([[0, 1], [1, 0]])
-        observations = np.array([0, 1])
-        emissions = np.array([[1, 0], [0, 1]])
+        transitions = np.array([[0, 1], [1, 0]]) # On > Off, Off > On
+        observations = np.array([0, 1]) # Off and on.
+        emissions = np.array([[1, 0], [0, 1]]) # Off emits off, on emits on.
 
         viterbi = hmm.Viterbi.from_discrete_observations(
             states, priors, transitions, observations, emissions)
